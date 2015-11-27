@@ -18,6 +18,8 @@ function Target(data)
     this.transTable = data.transform;
     this.typeMult = data.damage;
     
+    this.events = new EventQueue();
+    
     this.totalTime = data.time;
     this.time = 0;
     this.timeBar = game.add.graphics(0, -12);
@@ -32,18 +34,22 @@ function Target(data)
     this.hpBar.drawRect(0, 0, Target.imgSize, 8);
     this.hpBar.endFill();
     
+    this.dmg = {};
+    
     this.space.addChild(this.sprite);
     this.space.addChild(this.hpBar);
     this.space.addChild(this.timeBar);
     
     this.update = function(dt) {
         this.time += dt;
+        if(this.events.queue.length > 0) this.events.update(dt);
+        
         if (this.time >= this.totalTime) 
         {
             alert("Game Over!");
             this.update = function() {};
         }
-        this.timeBar.scale.x = this.time/this.totalTime;
+        this.timeBar.scale.x = (this.totalTime-this.time)/this.totalTime;
     };
     
     this.defeat = function(variant) {
@@ -69,4 +75,18 @@ function Target(data)
             this.defeat(type);
         }
     }
+}
+
+//Damage Event
+function EventDamage(amount, type)
+{
+    this.time = 1;
+    
+    this.update = function(dt) {
+        game.enemy.damage(amount*dt, type.name);
+    };
+    
+    this.end = function () {
+      // game.enemy.damage(amount, type.name);
+    };    
 }

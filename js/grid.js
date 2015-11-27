@@ -10,15 +10,22 @@ function Grid(data)
     this.height = data.size.y;
     
     this.enabled = true;
+    
     this.clock = game.time.create(false);
     this.clock.start();
+    this.events = new EventQueue();
     
     this.update = function(dt) {
+        if (this.events.queue.length > 0)
+            this.events.update(dt);
+            
+        this.enabled = this.events.queue.length == 0;
+        
         for (var x = 0; x < this.width; x++)
         {
             for (var y = 0; y < this.height; y++)
             {
-                this.grid[x][y].update(dt);
+                if (this.grid[x][y] != undefined) this.grid[x][y].update(dt);
             }
         }
         this.selectBox.visible = (this.selected != undefined);
@@ -35,6 +42,7 @@ function Grid(data)
             {
                 var colMatch = [];
                 colMatch.push(this.grid[x][y]);
+                
                 while (y < this.height-1 && this.grid[x][y].matchType == this.grid[x][y+1].matchType)
                 {
                     colMatch.push(this.grid[x][y+1]);
@@ -87,109 +95,21 @@ function Grid(data)
             }
             else
             {
-                this.enabled = false;
-                var temp = this.grid[x][y];
-                this.swap(this.selected, this.grid[x][y]);
-                this.clock.add(1000, function() {
-                    this.selected.selected = false;
-                    this.selected = temp;
-                    
-                    var M = this.matches();
-                    if (M.length > 0)
-                        this.processMatches(M);
-                    else
-                    {
-                        this.swap(this.selected, this.grid[x][y]);
-                        this.clock.add(1000, function() {
-                            this.enabled = true;
-                        }, this);
-                    }
-                    
-                    if (this.selected != undefined)
-                    this.selected = undefined;
-                }, this);
+                var tile1 = this.selected;
+                var tile2 = this.grid[x][y];
+                this.events.add([
+                    new EventTranslate(tile1, tile2.X-tile1.X, tile2.Y-tile1.Y, 0.25),
+                    new EventTranslate(tile2, tile1.X-tile2.X, tile1.Y-tile2.Y, 0.25)
+                ]);
+                this.selected = undefined;
+                
+                this.events.add(new EventCheckMatches(this, 0.1));
+                this.events.add([
+                    new EventTranslate(tile1, tile1.X-tile2.X, tile1.Y-tile2.Y, 0.25),
+                    new EventTranslate(tile2, tile2.X-tile1.X, tile2.Y-tile1.Y, 0.25)
+                ]); //This event set will be removed if there are matches
             }
         }
-    }
-    
-    //Evaluate matches
-    this.processMatches = function(matches) {
-        var timerOffset = 0;
-        for (var i in matches)
-        {
-            var M = matches[i];
-            //Analyze match and damage enemy
-            this.clock.add(timerOffset + 25, game.enemy.damage, game.enemy, M.length, M[0].matchType.name);
-        
-            for(var x in M)
-            {
-                var tile = M[x];
-                if (tile.sprite.alive)
-                {
-                    this.clock.add(timerOffset + 25, tile.sprite.kill, tile.sprite);
-                    timerOffset += 25;
-                }
-            }
-        }
-        this.clock.add(timerOffset+100, this.reorganize, this);
-    }
-    
-    //Reorganize tiles
-    this.reorganize = function() {
-        var timerOffset = 0;
-        for (var y = 0; y < this.height; y++)
-        {
-            for (var x = 0; x < this.width; x++)
-            {
-                var tile = this.grid[x][y];
-                if (!tile.sprite.alive)
-                {
-                    tile.sprite.destroy();
-                    this.clock.add(timerOffset + 50, this.columnFall, this, x, y);
-                    timerOffset += 50;
-                }
-            }
-        }
-        
-        this.clock.add(timerOffset + 50, function() {
-            var M = this.matches();
-            if (M.length > 0)
-                this.processMatches(M);
-            else
-                this.enabled = true;
-        }, this);
-    }
-    
-    this.columnFall = function(x, y)
-    {
-        for (var u = y-1; u >= 0; u--)
-        {
-            this.grid[x][u+1] = this.grid[x][u];
-            this.grid[x][u+1].moveTo(x,u+1);
-        }
-        this.grid[x][0] = this.addTile(x,0);
-    }
-    
-    //Swap two tiles
-    this.swap = function(T1, T2) {
-        var dx = T2.X-T1.X;
-        var dy = T2.Y-T1.Y;
-        
-        for(var t = 50; t <= 500; t += 50)
-        {
-            this.clock.add(t, T1.addDelta, T1, dx/10, dy/10);
-            this.clock.add(t, T2.addDelta, T2, -dx/10, -dy/10);
-        }
-        this.clock.add(500, function() {
-            var tX = T1.X;
-            var tY = T1.Y;
-            
-            this.grid[T1.X][T1.Y] = T2;
-            this.grid[T2.X][T2.Y] = T1;
-            
-            T1.moveTo(T2.X, T2.Y);
-            T2.moveTo(tX, tY);
-        }, this);
     }
     
     //Add new tile
@@ -213,7 +133,6 @@ function Grid(data)
         }
         this.grid.push(col);
     }
-    this.processMatches(this.matches());
     
     /*while(this.matches().length > 0)
     {
@@ -236,4 +155,174 @@ function Grid(data)
     this.selectBox.drawPolygon(Grid.tileSize, Grid.tileSize-8, Grid.tileSize, Grid.tileSize, Grid.tileSize-8, Grid.tileSize);
     this.selectBox.endFill();
     this.selectBox.visible = false;
+}
+
+//Move tile from its initial position to the specified position over time(in seconds)
+function EventTranslate(tile, x, y, time, clean)
+{
+    if (clean == undefined) clean = false;
+    
+    this.time = time;
+    this.tile = tile;
+    this.total_time = time;
+    this.clean = clean;
+    
+    this.delta = {
+        x: x,
+        y: y
+    };
+    
+    this.update = function(dt)
+    {
+        this.tile.addDelta(dt/this.total_time * this.delta.x, dt/this.total_time * this.delta.y);
+    };
+    
+    this.end = function()
+    {
+        if (clean)
+            game.grid.grid[this.tile.X][this.tile.Y] = undefined;
+            
+        var destination = {
+            x: tile.X + x,
+            y: tile.Y + y
+        };
+        
+        this.tile.moveTo(destination.x, destination.y);
+        game.grid.grid[destination.x][destination.y] = this.tile;
+    };
+}
+
+//Erase tile by fading over time(in seconds)
+function EventErase(tile, time)
+{
+    this.time = time;
+    this.tile = tile;
+    this.total_time = time;
+    
+    this.update = function(dt) {
+        this.tile.sprite.alpha = this.time/this.total_time;
+    };
+    
+    this.end = function() {
+        game.grid.grid[tile.X][tile.Y] = undefined;
+    };
+}
+
+//Erase tile by fading over time(in seconds)
+function EventCreate(x, y, grid, time)
+{
+    this.time = time;
+    this.total_time = time;
+    
+    this.grid = grid;
+    
+    this.tile = grid.addTile(x, y);
+    this.tile.sprite.alpha = 0;
+    this.grid.grid[x][y] = this.tile;
+    
+    this.update = function(dt) {
+        this.tile.sprite.alpha = (this.total_time - this.time)/this.total_time;
+    };
+    
+    this.end = function() {
+        this.tile.sprite.alpha = 1;
+    };
+}
+
+//Check and mark grid matches
+function EventCheckMatches(grid, delay)
+{
+    this.time = delay;
+    this.grid = grid;
+    
+    this.update = function(dt) {
+        if (this.matches == undefined)
+        {
+            this.matches = this.grid.matches();
+        }
+    };
+    
+    this.end = function() {
+        if (this.matches.length > 0)
+        {
+            this.grid.events.discard();
+            
+            var eraseTiles = [];
+            for (var m in this.matches)
+            {
+                game.enemy.events.add(new EventDamage(this.matches[m].length, this.matches[m][0].matchType));
+                
+                for (var i in this.matches[m])
+                {
+                    eraseTiles.push(new EventErase(this.matches[m][i], 0.25));
+                }
+            }
+            
+            grid.events.add(eraseTiles);
+            grid.events.add(new EventReorganize(this.grid));
+        }
+    };
+}
+
+//Reorganize grid
+function EventReorganize(grid)
+{
+    this.time = 0;
+    this.grid = grid;
+    
+    this.update = function(dt) {};
+    
+    this.end = function()
+    {
+        var colShiftEvents = [];
+        for(var x=0; x < this.grid.grid.length; x++)
+        {
+            var col = this.grid.grid[x];
+            var y = col.length-1;
+            while (col[y] != undefined && y >= 0) y--;
+            
+            if (y < 0) continue;
+            
+            var ty = y-1;
+            while(ty >= 0)
+            {
+                while(ty >= 0 && col[ty] == undefined)
+                {
+                    ty--;
+                }
+                if (ty < 0) continue;
+                colShiftEvents.push(new EventTranslate(col[ty], 0, y-ty, (y-ty)*0.125, true));
+                ty--;
+                y--;
+            }
+        }
+        this.grid.events.add(colShiftEvents);
+        this.grid.events.add(new EventRefill(this.grid));
+    };
+}
+
+//Refill grid
+function EventRefill(grid)
+{
+    this.time = 0;
+    this.grid = grid;
+    
+    this.update = function(dt) {};
+    
+    this.end = function()
+    {
+        var createEvents = [];
+        for(var x=0; x < this.grid.grid.length; x++)
+        {
+            for(var y=0; y < this.grid.grid[x].length; y++)
+            {
+                if (this.grid.grid[x][y] != undefined) break;
+                
+                createEvents.push(new EventCreate(x, y, this.grid, 0.2));
+            }
+        }
+        
+        grid.events.add(createEvents);
+        grid.events.add(new EventCheckMatches(this.grid, 0.1));
+    }
 }
