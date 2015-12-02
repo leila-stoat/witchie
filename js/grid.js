@@ -15,6 +15,8 @@ function Grid(data)
     this.clock.start();
     this.events = new EventQueue();
     
+    this.gameOver = false;
+    
     this.update = function(dt) {
         if (this.events.queue.length > 0)
             this.events.update(dt);
@@ -80,7 +82,7 @@ function Grid(data)
     this.selected = undefined;
     this.select = function(x, y)
     {
-        if (!this.enabled) return;
+        if (!this.enabled || this.gameOver) return;
         
         if (this.selected == undefined)
         {
@@ -323,6 +325,7 @@ function EventRefill(grid)
         }
         
         grid.events.add(createEvents);
-        grid.events.add(new EventCheckMatches(this.grid, 0.1));
+        if (!this.gameOver)
+            grid.events.add(new EventCheckMatches(this.grid, 0.1));
     }
 }

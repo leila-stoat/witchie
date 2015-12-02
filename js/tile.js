@@ -49,14 +49,14 @@ function Tile(data)
 
 //Match Type enumeration
 var MatchTypes = {
-    red: { name:'red', color: 0xff0000 },
-    yellow: { name:'yellow', color: 0xffff00 },
-    green: { name:'green', color: 0x00ff00 },
-    blue: { name:'blue', color: 0x0000ff },
-    violet: { name:'violet', color: 0x8000ff },
-    magenta: { name:'magenta', color: 0xff0080 },
-    black: { name:'black', color: 0x404040 },
-    white: { name:'white', color: 0xffffff }
+    red: { name:'red', color: 0xff0000, frames: [0] },
+    yellow: { name:'yellow', color: 0xffff00, frames: [0] },
+    green: { name:'green', color: 0x00ff00, frames: [0] },
+    blue: { name:'blue', color: 0x0000ff, frames: [0] },
+    violet: { name:'violet', color: 0x8000ff, frames: [0] },
+    magenta: { name:'magenta', color: 0xff0080, frames: [0] },
+    black: { name:'black', color: 0x404040, frames: [0] },
+    white: { name:'white', color: 0xffffff, frames: [0] }
 };
 var keys = [];
 for (t in MatchTypes) keys.push(t);

@@ -34,22 +34,29 @@ function Target(data)
     this.hpBar.drawRect(0, 0, Target.imgSize, 8);
     this.hpBar.endFill();
     
-    this.dmg = {};
+    this.dmg = {
+        bars: 0 //counter
+    };
     
     this.space.addChild(this.sprite);
     this.space.addChild(this.hpBar);
     this.space.addChild(this.timeBar);
     
     this.update = function(dt) {
-        this.time += dt;
         if(this.events.queue.length > 0) this.events.update(dt);
         
-        if (this.time >= this.totalTime) 
+        if (!game.grid.gameOver)
         {
-            alert("Game Over!");
-            this.update = function() {};
+            this.time += dt;
+            this.timeBar.scale.x = (this.totalTime-this.time)/this.totalTime;
+            
+            if (this.time >= this.totalTime) 
+            {
+                alert("Game Over!");
+                game.grid.gameOver = true;
+            }
         }
-        this.timeBar.scale.x = (this.totalTime-this.time)/this.totalTime;
+        
     };
     
     this.defeat = function(variant) {
@@ -69,10 +76,45 @@ function Target(data)
         this.hp -= mult * amount;
         this.hpBar.scale.x = this.hp/this.maxHP;
         
+        if (this.dmg[type] == undefined)
+        {
+            this.dmg[type] = {
+                amount: mult * amount,
+                bar: game.add.graphics(Target.imgSize, 1 + this.dmg.bars * 10)
+            };
+            
+            this.dmg[type].bar.beginFill(MatchTypes[type].color);
+            this.dmg[type].bar.drawRect(0, 0, Target.imgSize, 8);
+            this.dmg[type].bar.endFill();
+            this.space.addChild(this.dmg[type].bar);
+            
+            this.dmg[type].bar.scale.x = -(mult * amount)/this.maxHP;
+            this.dmg.bars++;
+        }
+        else
+        {
+            this.dmg[type].amount += mult * amount;
+            this.dmg[type].bar.scale.x += (mult * amount)/this.maxHP;
+        }
+        
         if (this.hp <= 0)
         {
+            game.grid.gameOver = true;
+            
             this.hp = 0;
-            this.defeat(type);
+            var mostDamageType;
+            var mostDamage = 0;
+            for(var color in this.dmg)
+            {
+                if (this.dmg[color].amount == undefined) continue;
+                
+                if (this.dmg[color].amount > mostDamage || mostDamageType == undefined)
+                {
+                    mostDamageType = color;
+                    mostDamage = this.dmg[color].amount;
+                }
+            }
+            this.defeat(mostDamageType);
         }
     }
 }
