@@ -3,7 +3,7 @@ var game = new Phaser.Game(480, 640, Phaser.CANVAS, 'witch-game', {
     preload: function() {
         game.load.spritesheet("tilesheet","assets/tiles.png",Grid.tileSize,Grid.tileSize);
         
-        game.load.spritesheet("guysheet0","assets/guygeneric.png",80,80);  
+        game.load.spritesheet("guysheet0","assets/ericgeneric.png",80,80);  
     },
     
     create: function() {
@@ -19,11 +19,13 @@ var game = new Phaser.Game(480, 640, Phaser.CANVAS, 'witch-game', {
             sprite: 'guysheet0',
             time: 90,
             transform: {
-                'magenta': 2
+                'red': 1,
+                'magenta': 2,
+                'blue': 3,
+                'green': 4,
+                'violet': 5
             },
             damage: {
-                'magenta': 2,
-                'black': 0.5
             }
         }
         
