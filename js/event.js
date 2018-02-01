@@ -74,3 +74,4 @@ function EventEndQueue()
     this.update = function(dt) {};
     this.end = function() {};
 }
+

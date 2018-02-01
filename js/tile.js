@@ -17,7 +17,12 @@ function Tile(data)
     this.sprite = game.add.sprite(this.X*Grid.tileSize, this.Y*Grid.tileSize, data.sheet);
     this.sprite.frame = data.tile;
     this.matchType = data.type;
-    if (this.matchType.color != undefined) this.sprite.tint = this.matchType.color;
+    if (this.matchType.color != undefined)
+    {
+        this.sprite.tint = this.matchType.color;
+        this.sprite.frame = game.enemy.transTable[this.matchType.name].sprite;
+    }
+    
     
     this.selected = false;
     
@@ -61,6 +66,13 @@ var MatchTypes = {
 var keys = [];
 for (t in MatchTypes) keys.push(t);
 MatchTypes.types = keys;
-MatchTypes.getRandom = function () {
-    return this[this.types[Math.floor(Math.random() * this.types.length)]];
+MatchTypes.getRandom = function (refTable) {
+    while(true)
+    {
+        var matchType = this[this.types[Math.floor(Math.random() * this.types.length)]];
+        if (refTable == undefined || refTable[matchType.name] != undefined)
+        {
+            return matchType;
+        }
+    }
 }

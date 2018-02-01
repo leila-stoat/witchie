@@ -1,0 +1,89 @@
+[
+    {
+    	"name": "Eric",
+    	"title": "The Generic",
+    	"hp": 100,
+    	"sprite": "ericgeneric.png",
+    	"tiles": "erictiles.png",
+    	"time": 120,
+    	"transform": {
+    	    "default": "magenta",
+    		"red": {
+    		    "name": "Erika",
+    		    "title": "Easy Girl",
+    		    "sprite": 1
+    		},
+    		"magenta": {
+    		    "name": "Riri",
+    		    "title": "Bimbo",
+    		    "sprite": 2
+    		},
+    		"blue": {
+    		    "name": "Rika",
+    		    "title": "Schoolgirl",
+    		    "sprite": 3
+    		},
+    		"green": {
+    		    "name": "Rinna",
+    		    "title": "Girlscout",
+    		    "sprite": 4
+    		},
+    		"violet": {
+    		    "name": "Erynia",
+    		    "title": "Lavender Fairy",
+    		    "sprite": 5
+    		}
+    	},
+    	"damage": {}
+    },
+    {
+        "name": "John",
+        "title": "The Weakling",
+        "hp": 50,
+        "sprite": "tfloving.png",
+        "time": 300,
+        "transform": {
+            "default": "white",
+            "white": {
+                "name": "Mary",
+    		    "title": "Big Baby",
+    		    "sprite": "1"
+            },
+            "black": {
+                "name": "Joni",
+    		    "title": "Gothic Lolita",
+    		    "sprite": "1"
+            },
+            "red": {
+                "name": "Mary",
+    		    "title": "Big Baby",
+    		    "sprite": "1"
+            },
+            "pink": {
+                "name": "Missy",
+    		    "title": "Prissy Sissy",
+    		    "sprite": "1"
+            },
+            "yellow": {
+                "name": "Belle",
+    		    "title": "Princess Baby",
+    		    "sprite": "1"
+            },
+            "green": {
+                "name": "Stinkerbell",
+    		    "title": "Fairy Baby",
+    		    "sprite": "1"
+            },
+            "blue": {
+                "name": "Mary",
+    		    "title": "Big Baby",
+    		    "sprite": "1"
+            },
+            "purple": {
+                "name": "Mary",
+    		    "title": "Big Baby",
+    		    "sprite": "1"
+            }
+        }
+    }
+]
