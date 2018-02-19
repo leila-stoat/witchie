@@ -2,6 +2,8 @@
     {
     	"name": "Eric",
     	"title": "The Generic",
+    	"quote": "Man, I feel like a.... dude?",
+    	"blurb": "Eric's a pretty normal guy. Vaguely college-aged, vaguely cool, vaguely a jerk... Regardless, not the sort of guy you would expect to see in panties or a tutu. He's definitely not the kind of guy who expects to see himself like that, either...",
     	"hp": 100,
     	"sprite": "ericgeneric.png",
     	"tiles": "erictiles.png",
@@ -11,27 +13,58 @@
     		"red": {
     		    "name": "Erika",
     		    "title": "Easy Girl",
-    		    "sprite": 1
+    		    "sprite": 1,
+    		    "quote": "P-please, $2. No, stop! ...I’ll do it for $1.",
+    		    "blurb": "Waking up to his new look gave Eric, now Erika according to the tattoo on his chest, quite the shock. When he realized he was abandoned with only a purse full of condoms, a few hundred miles from home, and completely broke, he started to panic."
     		},
     		"magenta": {
     		    "name": "Riri",
     		    "title": "Bimbo",
-    		    "sprite": 2
+    		    "sprite": 2,
+    		    "quote": "Like, OMG, I just wanna [CENSORED]! *Giggle*",
+    		    "blurb": "Eric blew yet another kiss at a stranger, hips cocked seductively. He pranced down the busy street, padded hips sashaying despite his mental begging. Riri was his name now, and if he ever regained control, he would never heckle a hypnotist again."
     		},
     		"blue": {
     		    "name": "Rika",
     		    "title": "Schoolgirl",
-    		    "sprite": 3
+    		    "sprite": 3,
+    		    "quote": "Sex Ed refresher? With visual aids? Oh no.",
+    		    "blurb": "Eric regretted telling his professor he’d do anything if she could ignore his degree-threatening plagiarism. Wearing short skirts, sucking lollipops, blowing kisses, and calling himself Rika were not exactly the sort of things he had in mind."
     		},
     		"green": {
     		    "name": "Rinna",
     		    "title": "Girlscout",
-    		    "sprite": 4
+    		    "sprite": 4,
+    		    "quote": "Our cookies are as sweet as me. Tee. Hee.",
+    		    "blurb": "Little sisters. Blackmail. Skirts. Poor Eric may feel like crying, but Rinna has to make his sales goal! He won’t stop pouting? He’d better watch out—if doesn’t hurry, he may be forced to bring out that flirty sweetness to get his sales up!"
+    		},
+    		"black": {
+    		    "name": "Eryn",
+    		    "title": "Goth Chick",
+    		    "sprite": 5,
+    		    "quote": "At least it’s not pink?",
+    		    "blurb": "Dressed in his partner’s lingerie after a failed bet, Eric is shaken as she brings up his secret cheating and his side-girls. Now Eliza, he feels like barbie’s goth twin, kept in line by his now ex-girlfriend’s growing collection of photos."
+    		},
+    		"white": {
+    		    "name": "Arianna",
+    		    "title": "Prima Ballerina",
+    		    "sprite": 6,
+    		    "quote": "I get it. Nutcracker. And I’m the fairy. Ha. Ha.",
+    		    "blurb": "Eric would prefer to be playing football, but his blackmailer has different ideas. Instead, Estelle shows up every weekend at the dance studio, all dolled up in his frillies and tights to give the girls a rare chance to enjoy the male ballet roles."
+    		},
+    		"yellow": {
+    		    "name": "Ariel",
+    		    "title": "Beach Babe",
+    		    "sprite": 7,
+    		    "quote": "No! I can put the suntan lotion on by myself!",
+    		    "blurb": "Eric trembled. Stay on the sand with his touchy tormentors, or take his chances in the surf? As his ex-girlfriend snapped on “Elaine”’s water wings and assured him the hunky lifeguard would protect him, he wasn’t sure he made the right choice."
     		},
     		"violet": {
     		    "name": "Erynia",
     		    "title": "Lavender Fairy",
-    		    "sprite": 5
+    		    "sprite": 8,
+    		    "quote": "Where’s the zipper!? OH GOD IT’S MOVING!",
+    		    "blurb": "Lavender Fairy was never the most popular superhero. Both sexist and sexual, she was ridiculed and then vanished. Eric, now Eryina, has accidentally discovered that it was the outfit that had the powers, and it’s still ready to fight crime with love!"
     		}
     	},
     	"damage": {}

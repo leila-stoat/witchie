@@ -5,7 +5,9 @@ function Grid(data)
 {
     Grid.tileSize = 32;
     
-    this.space = game.add.graphics((game.world.width - data.size.x * Grid.tileSize) / 2, 80 + (game.world.height - 80 - data.size.y * Grid.tileSize) / 2);
+    var gridX = data.x + ((game.world.width - data.size.x * Grid.tileSize) / 2);
+    var gridY = data.y + ((game.world.height - data.size.y * Grid.tileSize) / 2);
+    this.space = game.add.graphics(gridX, gridY);
     this.width = data.size.x;
     this.height = data.size.y;
     

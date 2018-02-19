@@ -7,7 +7,7 @@
 // - damage: type match table(damage multipliers)
 function Target(data)
 {
-    Target.imgSize = 80;
+    Target.imgSize = 150;
     
     this.name = data.name;
     this.space = game.add.graphics(game.world.width/2 - Target.imgSize/2, 16);
@@ -92,6 +92,7 @@ function Target(data)
     
     this.defeat = function(variant) {
         game.playData.victory = true;
+        game.sissydex[this.name].sissies[variant].found = true;
         game.playData.tf = this.transTable[variant];
         this.sprite.frame = game.playData.tf.frame;
         
